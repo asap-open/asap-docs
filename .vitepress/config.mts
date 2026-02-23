@@ -1,12 +1,16 @@
 import { defineConfig } from "vitepress";
 
 export default defineConfig({
+  base: "/asap-docs/",
   ignoreDeadLinks: [/^https?:\/\/localhost/],
   title: "ASAP",
   description:
     "Applied Strength & Advancement Platform - A data-driven workout management and analytics system",
   head: [
-    ["link", { rel: "icon", type: "image/webp", href: "/logo-2.webp" }],
+    [
+      "link",
+      { rel: "icon", type: "image/webp", href: "/asap-docs/logo-2.webp" },
+    ],
     ["link", { rel: "preconnect", href: "https://fonts.googleapis.com" }],
     [
       "link",
