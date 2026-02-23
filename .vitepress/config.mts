@@ -1,6 +1,7 @@
 import { defineConfig } from "vitepress";
 
 export default defineConfig({
+  ignoreDeadLinks: [/^https?:\/\/localhost/],
   title: "ASAP",
   description:
     "Applied Strength & Advancement Platform - A data-driven workout management and analytics system",
