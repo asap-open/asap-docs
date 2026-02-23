@@ -1,6 +1,13 @@
-# ASAP Documentation
+<p align="center">
+  <img src="public/logo-2.webp" alt="ASAP" width="96" />
+</p>
 
-Complete documentation for the Applied Strength & Advancement Platform.
+<h1 align="center">ASAP — Documentation</h1>
+
+<p align="center">
+  VitePress documentation site for the <strong>Applied Strength & Advancement Platform</strong>.
+  Deployed to GitHub Pages at <a href="https://asap-open.github.io/asap-docs/">asap-open.github.io/asap-docs</a>.
+</p>
 
 ## 📚 Documentation Structure
 
@@ -30,7 +37,8 @@ docs/
 
 ```bash
 cd docs
-npm run docs:dev
+yarn install
+yarn docs:dev
 ```
 
 Documentation will be available at: `http://localhost:5173`
@@ -38,15 +46,13 @@ Documentation will be available at: `http://localhost:5173`
 ### Build for Production
 
 ```bash
-cd docs
-npm run docs:build
+yarn docs:build
 ```
 
 ### Preview Production Build
 
 ```bash
-cd docs
-npm run docs:preview
+yarn docs:preview
 ```
 
 ## 🎨 Theme Customization
@@ -170,35 +176,33 @@ This is dangerous
 
 ### GitHub Pages
 
-1. Build docs: `npm run docs:build`
-2. Deploy `.vitepress/dist` folder
+Deployment is handled automatically via the GitHub Actions workflow on every push to `main`. See [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml).
 
 ### Vercel
 
 1. Connect GitHub repo
-2. Set build command: `cd docs && npm run docs:build`
-3. Set output directory: `docs/.vitepress/dist`
+2. Set build command: `yarn docs:build`
+3. Set output directory: `.vitepress/dist`
 
 ### Netlify
 
 1. Connect GitHub repo
-2. Set build command: `cd docs && npm run docs:build`
-3. Set publish directory: `docs/.vitepress/dist`
+2. Set build command: `yarn docs:build`
+3. Set publish directory: `.vitepress/dist`
 
-## 📚 Resources
+## Resources
 
 - [VitePress Documentation](https://vitepress.dev/)
-- [Markdown Guide](https://www.markdownguide.org/)
 - [VitePress Theme Config](https://vitepress.dev/reference/default-theme-config)
+- [ASAP Live Docs](https://asap-open.github.io/asap-docs/)
 
-## 🎯 Next Steps
+## Contributing
 
-1. Update GitHub link in config
-2. Add screenshots/images to documentation
-3. Expand API documentation with more examples
-4. Add deployment guide
-5. Create contributing guidelines
-6. Add changelog
+See the [CONTRIBUTING](CONTRIBUTING) for contribution guidelines.
+
+## License
+
+This project is licensed under the **GPLv3 License** — see [LICENSE](LICENSE) for details.
 
 ---
 
