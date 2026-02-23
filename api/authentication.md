@@ -27,24 +27,31 @@ Create a new user account.
 }
 ```
 
+**Fields:**
+
+- `username` (required): Unique username
+- `email` (required): Unique email address
+- `password` (required): Account password
+- `fullName` (optional): Display name — creates a profile entry if provided
+
 **Response:** `201 Created`
 
 ```json
 {
+  "message": "User created successfully",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "user": {
-    "id": "uuid",
+    "id": "user-uuid",
     "username": "johndoe",
-    "email": "john@example.com",
-    "createdAt": "2026-01-25T10:00:00.000Z"
-  },
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    "email": "john@example.com"
+  }
 }
 ```
 
 **Errors:**
 
-- `400` - Username or email already exists
-- `400` - Invalid input data
+- `400` - `username`, `email`, or `password` missing
+- `400` - Username or email already in use
 
 ---
 
@@ -58,47 +65,48 @@ Authenticate and receive a JWT token.
 
 ```json
 {
-  "username": "johndoe",
+  "identifier": "johndoe",
   "password": "SecurePass123!"
 }
 ```
+
+**Fields:**
+
+- `identifier` (required): Either the user's **email** or **username**
+- `password` (required): Account password
 
 **Response:** `200 OK`
 
 ```json
 {
+  "message": "Login successful",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "user": {
-    "id": "uuid",
+    "id": "user-uuid",
     "username": "johndoe",
     "email": "john@example.com"
-  },
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
 }
 ```
 
 **Errors:**
 
+- `400` - `identifier` or `password` missing
 - `401` - Invalid credentials
 
 ---
 
 ### Logout
 
-Invalidate the current session (client-side token removal).
+Client-side token invalidation. Clears any server-side session state.
 
 **Endpoint:** `POST /auth/logout`
-
-**Headers:**
-
-```
-Authorization: Bearer {token}
-```
 
 **Response:** `200 OK`
 
 ```json
 {
-  "message": "Logged out successfully"
+  "message": "Logout successful"
 }
 ```
 
@@ -115,43 +123,17 @@ curl -H "Authorization: Bearer YOUR_TOKEN_HERE" \
 
 ### Token Structure
 
-The JWT token contains:
-
-- User ID
-- Expiration time (7 days by default)
+The JWT contains the `userId` and an expiration claim. Expiry is controlled by the `TOKEN_EXP` environment variable (default `7d`).
 
 ### Token Expiration
 
-Tokens expire after 7 days. When a token expires:
-
-- API returns `401 Unauthorized`
-- User must sign in again to get a new token
-
-## Security Best Practices
-
-1. **Store tokens securely**
-   - Use httpOnly cookies in production
-   - Never expose tokens in URLs
-   - Clear tokens on logout
-
-2. **Use HTTPS in production**
-   - Tokens should only be sent over secure connections
-   - Configure proper SSL/TLS certificates
-
-3. **Rotate tokens regularly**
-   - Implement token refresh mechanism
-   - Set appropriate expiration times
-
-4. **Validate input**
-   - Strong password requirements
-   - Email validation
-   - Username format validation
+When a token expires the API returns `401 Unauthorized` and the user must sign in again.
 
 ## Example: Complete Authentication Flow
 
 ```javascript
 // Sign up
-const signupResponse = await fetch("http://localhost:3000/api/auth/signup", {
+const signupRes = await fetch("http://localhost:3000/api/auth/signup", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
@@ -161,28 +143,26 @@ const signupResponse = await fetch("http://localhost:3000/api/auth/signup", {
     fullName: "John Doe",
   }),
 });
+const { token, user } = await signupRes.json();
 
-const { token, user } = await signupResponse.json();
-
-// Store token
-localStorage.setItem("token", token);
+// Sign in (using email or username as identifier)
+const signinRes = await fetch("http://localhost:3000/api/auth/signin", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    identifier: "john@example.com", // or "johndoe"
+    password: "SecurePass123!",
+  }),
+});
+const { token } = await signinRes.json();
 
 // Use token for authenticated requests
-const profileResponse = await fetch("http://localhost:3000/api/profile", {
-  headers: {
-    Authorization: `Bearer ${token}`,
-    "Content-Type": "application/json",
-  },
+const profileRes = await fetch("http://localhost:3000/api/profile", {
+  headers: { Authorization: `Bearer ${token}` },
 });
-
-const profile = await profileResponse.json();
 
 // Logout
 await fetch("http://localhost:3000/api/auth/logout", {
   method: "POST",
-  headers: { Authorization: `Bearer ${token}` },
 });
-
-// Clear token
-localStorage.removeItem("token");
 ```

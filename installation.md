@@ -6,63 +6,69 @@ ASAP can be deployed in multiple ways depending on your needs. Choose the method
 
 - **Docker & Docker Compose** (recommended)
 - **Node.js 18+** and **PostgreSQL 14+** (for manual installation)
-- **Git** for cloning the repository
 
 ---
 
 ## Method 1: Docker Compose (Recommended)
 
-The easiest way to get ASAP running is with Docker Compose.
-
-### Step 1: Clone the Repository
-
-```bash
-git clone https://github.com/yourusername/asap.git
-cd asap
-```
-
-### Step 2: Environment Configuration
-
-/workout_tool/tool-main/docs/public/logo-2.webp
-Create a `.env` file in the `server` directory:
-
-```bash
-# Database
-DATABASE_URL="postgresql://postgres:postgres@db:5432/asap"
-
-# JWT Secret (generate a secure random string)
-JWT_SECRET="your-super-secret-jwt-key-change-this"
-
-# Server
-PORT=3000
-NODE_ENV=production
-```
+All deployment files live in the [`deploy/`](https://github.com/asap-open/ASAP/tree/main/deploy) directory. Two compose files are provided — one that spins up a PostgreSQL container for you, and one for connecting to a database you already have running.
 
 ::: tip
 Generate a secure JWT secret with: `openssl rand -base64 32`
 :::
 
-### Step 3: Start the Application
+### Step 1: Create a directory on your homelab and enter it
 
 ```bash
-docker-compose up -d
+mkdir asap && cd asap
 ```
 
-This will:
+### Step 2: Download the compose file and its matching env file
 
-- Start a PostgreSQL database
-- Run database migrations
-- Start the backend server on port 3000
-- Start the frontend on port 80
+**Option A — let Docker manage the database:**
 
-### Step 4: Access ASAP
+```bash
+curl -O https://raw.githubusercontent.com/asap-open/ASAP/refs/heads/main/deploy/compose.with-db.yaml
+curl -O https://raw.githubusercontent.com/asap-open/ASAP/refs/heads/main/deploy/.env.with-db
+```
+
+**Option B — bring your own database:**
+
+```bash
+curl -O https://raw.githubusercontent.com/asap-open/ASAP/refs/heads/main/deploy/compose.external-db.yaml
+curl -O https://raw.githubusercontent.com/asap-open/ASAP/refs/heads/main/deploy/.env.external-db
+```
+
+### Step 3: Copy the env file to `.env` and fill in your values
+
+```bash
+# Option A
+cp .env.with-db .env
+
+# Option B
+cp .env.external-db .env
+```
+
+Open `.env` in your editor and update at minimum `JWT_SECRET`, `DOMAIN_NAME`, and (for Option B) `DATABASE_URL`.
+
+### Step 4: Start the stack
+
+```bash
+# Option A
+docker compose -f compose.with-db.yaml up -d
+
+# Option B
+docker compose -f compose.external-db.yaml up -d
+```
+
+### Step 5: Access ASAP
 
 Open your browser and navigate to:
 
 - **Frontend**: [http://localhost](http://localhost)
 - **Backend API**: [http://localhost:3000](http://localhost:3000)
 
-### Step 5: Create Your Account
+### Step 6: Create Your Account
 
 1. Click "Sign Up" on the homepage
 2. Enter your details (username, email, password, full name)
@@ -106,7 +112,7 @@ docker run -d \
   -e JWT_SECRET="your-jwt-secret" \
   -e PORT=3000 \
   -p 3000:3000 \
-  asap-server
+  sarthakg0yal/asap-server
 ```
 
 ### Run Frontend
@@ -115,7 +121,7 @@ docker run -d \
 docker run -d \
   --name asap-client \
   -p 80:80 \
-  asap-client
+  sarthakg0yal/asap-client
 ```
 
 ---
@@ -133,11 +139,11 @@ cd asap
 
 # Install server dependencies
 cd server
-npm install
+yarn install
 
 # Install client dependencies
 cd ../client
-npm install
+yarn install
 ```
 
 ### Step 2: Setup PostgreSQL
@@ -169,7 +175,7 @@ npx prisma migrate deploy
 ### Step 5: Seed Initial Data (Optional)
 
 ```bash
-npm run seed
+yarn run seed
 ```
 
 ### Step 6: Start Development Servers
@@ -178,40 +184,20 @@ In one terminal (backend):
 
 ```bash
 cd server
-npm run dev
+yarn run dev
 ```
 
 In another terminal (frontend):
 
 ```bash
 cd client
-npm run dev
+yarn run dev
 ```
 
 Access the application:
 
 - **Frontend**: [http://localhost:5173](http://localhost:5173)
 - **Backend API**: [http://localhost:3000/api](http://localhost:3000/api)
-
----
-
-## Verification
-
-After installation, verify everything is working:
-
-1. **Check Backend Health**
-
-   ```bash
-   curl http://localhost:3000/api/health
-   ```
-
-2. **Access Frontend**
-   Open [http://localhost:5173](http://localhost:5173) in your browser
-
-3. **Create Test Account**
-   - Click "Sign Up"
-   - Fill in the registration form
-   - Log in with your credentials
 
 ---
 

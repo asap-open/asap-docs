@@ -30,14 +30,14 @@ Content-Type: application/json
 ```json
 {
   "weightKg": 85.5,
-  "note": "Morning weight, post-workout"
+  "recordedAt": "2026-02-23T08:00:00.000Z"
 }
 ```
 
 **Fields:**
 
-- `weightKg` (required): Weight in kilograms
-- `note` (optional): Additional notes about the measurement
+- `weightKg` (required): Weight value in kilograms
+- `recordedAt` (optional): ISO timestamp of when the measurement was taken — defaults to now
 
 **Response:** `201 Created`
 
@@ -46,24 +46,22 @@ Content-Type: application/json
   "id": "weight-log-uuid",
   "userId": "user-uuid",
   "weightKg": 85.5,
-  "note": "Morning weight, post-workout",
-  "loggedAt": "2026-01-25T10:00:00.000Z"
+  "recordedAt": "2026-02-23T08:00:00.000Z"
 }
 ```
 
-**Note:** This also updates the `latestWeightKg` field in your user profile automatically.
+**Note:** This also updates `latestWeightKg` in your profile automatically.
 
 **Errors:**
 
-- `400` - Weight is required
-- `400` - Weight must be a positive number
+- `400` - `weightKg` is required
 - `401` - Unauthorized
 
 ---
 
 ## Get Weight History
 
-Retrieve all weight logs for the current user, ordered by date (most recent first).
+Retrieve weight logs for the current user, ordered by date ascending (suitable for charting).
 
 **Endpoint:** `GET /weights/history`
 
@@ -73,23 +71,40 @@ Retrieve all weight logs for the current user, ordered by date (most recent firs
 Authorization: Bearer {token}
 ```
 
+**Query Parameters:**
+
+| Param   | Type   | Description                   |
+| ------- | ------ | ----------------------------- |
+| `range` | string | Time range filter (see below) |
+
+**Range values:**
+
+| Value | Description                   |
+| ----- | ----------------------------- |
+| `1W`  | Last 7 days                   |
+| `1M`  | Last 30 days                  |
+| `3M`  | Last 3 months                 |
+| `6M`  | Last 6 months                 |
+| `1Y`  | Last 12 months                |
+| `ALL` | All time (up to 5000 entries) |
+
+If `range` is omitted, the last 100 entries are returned.
+
 **Response:** `200 OK`
 
 ```json
 [
   {
-    "id": "weight-log-uuid-1",
+    "id": "weight-log-uuid",
     "userId": "user-uuid",
-    "weightKg": 85.5,
-    "note": "Morning weight",
-    "loggedAt": "2026-01-25T10:00:00.000Z"
+    "weightKg": 84.2,
+    "recordedAt": "2026-02-01T08:00:00.000Z"
   },
   {
     "id": "weight-log-uuid-2",
     "userId": "user-uuid",
-    "weightKg": 86.2,
-    "note": "After refeed day",
-    "loggedAt": "2026-01-18T10:00:00.000Z"
+    "weightKg": 85.5,
+    "recordedAt": "2026-02-23T08:00:00.000Z"
   }
 ]
 ```
@@ -105,7 +120,7 @@ Authorization: Bearer {token}
 ### Log a New Weight
 
 ```javascript
-const response = await fetch("http://localhost:3000/api/weights", {
+const weightLog = await fetch("http://localhost:3000/api/weights", {
   method: "POST",
   headers: {
     Authorization: `Bearer ${token}`,
@@ -113,91 +128,27 @@ const response = await fetch("http://localhost:3000/api/weights", {
   },
   body: JSON.stringify({
     weightKg: 85.5,
-    note: "Morning weight after cardio",
+    recordedAt: new Date().toISOString(),
   }),
-});
-
-const weightLog = await response.json();
-console.log("Logged weight:", weightLog);
+}).then((r) => r.json());
 ```
 
-### Get Weight History
+### Get Weight History for Charting
 
 ```javascript
-const response = await fetch("http://localhost:3000/api/weights/history", {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
-});
+// Last 3 months — good default for a weight trend chart
+const history = await fetch(
+  "http://localhost:3000/api/weights/history?range=3M",
+  { headers: { Authorization: `Bearer ${token}` } },
+).then((r) => r.json());
 
-const history = await response.json();
-console.log(`Total logs: ${history.length}`);
-
-// Calculate weight change
-if (history.length >= 2) {
-  const latest = history[0].weightKg;
-  const previous = history[1].weightKg;
-  const change = latest - previous;
-  console.log(`Weight change: ${change > 0 ? "+" : ""}${change.toFixed(1)} kg`);
-}
+// history is ordered oldest → newest, ready to pass to a chart library
+const chartData = history.map((log) => ({
+  x: log.recordedAt,
+  y: log.weightKg,
+}));
 ```
 
-### Weekly Weight Tracking
-
-```javascript
-// Log weight once per week
-const logWeeklyWeight = async (weight, note = "") => {
-  const response = await fetch("http://localhost:3000/api/weights", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      weightKg: weight,
-      note: note || `Week ${new Date().getWeek()} check-in`,
-    }),
-  });
-
-  return response.json();
-};
-
-// Get last 4 weeks of data
-const getLast4Weeks = async () => {
-  const response = await fetch("http://localhost:3000/api/weights/history", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
-  const history = await response.json();
-  const fourWeeksAgo = new Date();
-  fourWeeksAgo.setDate(fourWeeksAgo.getDate() - 28);
-
-  return history.filter((log) => new Date(log.loggedAt) >= fourWeeksAgo);
-};
-```
-
-## Best Practices
-
-### Consistency
-
-- **Weigh at the same time** - Morning weight (fasted) is most consistent
-- **Same conditions** - After using bathroom, before eating/drinking
-- **Track regularly** - Weekly is usually sufficient for most goals
-
-### Interpretation
-
-- **Look at trends** - Daily fluctuations are normal (water, food, etc.)
-- **Use weekly averages** - More reliable than single measurements
-- **Context matters** - Note factors like high-sodium meals, training intensity
-
-### Notes Field Usage
-
-Examples of useful notes:
-
-- "Post-refeed day"
-- "After deload week"
-- "Morning weight, fasted"
-- "Evening weight (unusual)"
 - "After vacation"
 
 ## Integration with Profile

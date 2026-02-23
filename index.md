@@ -59,18 +59,4 @@ Your training data belongs to you. ASAP runs on your own infrastructure with com
 
 ---
 
-## Quick Start
-
-```bash
-# Clone the repository
-git clone https://github.com/ASAP/workout-tool.git
-cd workout-tool
-
-# Start with Docker Compose
-docker compose up -d
-
-# Access the application
-open http://localhost:5173
-```
-
-Ready to get started? Check out the [Installation Guide](/installation).
+Ready to deploy? Head over to the [Installation Guide](/installation) for step-by-step instructions.

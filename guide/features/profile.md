@@ -63,14 +63,6 @@ To change your username:
 
 **Note:** Username must be unique across all users.
 
-### Update Email
-
-_Coming soon:_ Email update functionality.
-
-### Change Password
-
-_Coming soon:_ Password change functionality.
-
 ## Weight Management
 
 ### Logging Weight

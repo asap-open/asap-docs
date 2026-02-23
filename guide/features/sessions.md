@@ -13,7 +13,6 @@ Workout sessions are the core of ASAP. Each session represents a complete traini
 1. Navigate to the Dashboard
 2. Click **"Start Workout"** button
 3. Enter a session name (e.g., "Push Day A", "Lower Power")
-4. Add optional notes about the session
 
 ### Step 2: Add Exercises
 
