@@ -1,0 +1,129 @@
+/**
+ * Customize default theme styling by overriding CSS variables:
+ * https://github.com/vuejs/vitepress/blob/main/src/client/theme-default/styles/vars.css
+ */
+
+:root {
+  /* Brand Colors - Match your app */
+  --vp-c-brand-1: #13ecd6;
+  --vp-c-brand-2: #13ecd6;
+  --vp-c-brand-3: #13ecd6;
+  --vp-c-brand-soft: rgba(19, 236, 214, 0.14);
+
+  /* Typography - Epilogue font */
+  --vp-font-family-base:
+    "Epilogue", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+  --vp-font-family-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, monospace;
+
+  /* Background */
+  --vp-c-bg: #ffffff;
+  --vp-c-bg-soft: #f9fafb;
+  --vp-c-bg-muted: #f3f4f6;
+
+  /* Text */
+  --vp-c-text-1: #0f172a;
+  --vp-c-text-2: #475569;
+  --vp-c-text-3: #64748b;
+
+  /* Accent colors */
+  --vp-c-green-1: #13ecd6;
+  --vp-c-green-2: #10d4be;
+  --vp-c-green-3: #0dbda9;
+  --vp-c-green-soft: rgba(19, 236, 214, 0.14);
+
+  /* Button styles */
+  --vp-button-brand-bg: #13ecd6;
+  --vp-button-brand-text: #0f172a;
+  --vp-button-brand-hover-bg: #10d4be;
+  --vp-button-brand-hover-text: #0f172a;
+  --vp-button-brand-active-bg: #0dbda9;
+
+  /* Home page hero */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(120deg, #0f172a 30%, #13ecd6);
+
+  /* Code blocks */
+  --vp-code-block-bg: #f8fafc;
+}
+
+.dark {
+  /* Backgrounds — warm dark palette from the app */
+  --vp-c-bg: #171413;
+  --vp-c-bg-soft: #1c1918;
+  --vp-c-bg-muted: #242120;
+  --vp-c-bg-elv: #1c1918;
+  --vp-c-bg-alt: #171413;
+
+  /* Text — warm off-white */
+  --vp-c-text-1: #e1dddb;
+  --vp-c-text-2: #94a3b8;
+  --vp-c-text-3: #64748b;
+
+  /* Brand — lime green, matching the app dark primary */
+  --vp-c-brand-1: #9bdf57;
+  --vp-c-brand-2: #7fc341;
+  --vp-c-brand-3: #6aad30;
+  --vp-c-brand-soft: rgba(155, 223, 87, 0.12);
+
+  /* Borders & dividers */
+  --vp-c-divider: #242120;
+  --vp-c-border: #2a2725;
+  --vp-c-gutter: #171413;
+
+  /* Nav / sidebar surfaces */
+  --vp-nav-bg-color: #171413;
+  --vp-sidebar-bg-color: #1c1918;
+  --vp-local-nav-bg-color: #171413;
+
+  /* Buttons */
+  --vp-button-brand-bg: #9bdf57;
+  --vp-button-brand-text: #171413;
+  --vp-button-brand-hover-bg: #7fc341;
+  --vp-button-brand-hover-text: #171413;
+  --vp-button-brand-active-bg: #6aad30;
+
+  /* Hero */
+  --vp-home-hero-name-background: linear-gradient(120deg, #9bdf57 30%, #e1dddb);
+
+  /* Code blocks */
+  --vp-code-block-bg: #1c1918;
+  --vp-code-lang-color: #94a3b8;
+
+  /* Custom block (tip / warning / etc.) */
+  --vp-custom-block-tip-border: #9bdf57;
+  --vp-custom-block-tip-bg: rgba(155, 223, 87, 0.08);
+  --vp-custom-block-tip-code-bg: rgba(155, 223, 87, 0.06);
+}
+
+/* Custom styles */
+.VPHome .name {
+  font-weight: 900 !important;
+}
+
+.VPHome .tagline {
+  font-weight: 500 !important;
+  color: var(--vp-c-text-2) !important;
+}
+
+.VPFeature {
+  border: 1px solid var(--vp-c-bg-soft);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.VPFeature:hover {
+  border-color: var(--vp-c-brand-1);
+  box-shadow: 0 4px 20px rgba(19, 236, 214, 0.1);
+}
+
+.dark .VPFeature:hover {
+  box-shadow: 0 4px 20px rgba(155, 223, 87, 0.1);
+}
+
+/* Logo styling */
+.VPNavBarTitle .logo {
+  width: 32px;
+  height: 32px;
+}
