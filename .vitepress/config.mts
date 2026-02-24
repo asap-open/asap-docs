@@ -2,6 +2,7 @@ import { defineConfig } from "vitepress";
 
 export default defineConfig({
   base: "/asap-docs/",
+  srcExclude: ["**/README.md"],
   ignoreDeadLinks: [/^https?:\/\/localhost/],
   title: "ASAP",
   description:
