@@ -78,18 +78,6 @@ Open your browser and navigate to:
 
 ## Method 2: Docker (Separate Containers)
 
-If you want more control over the containers:
-
-### Build the Images
-
-```bash
-# Build backend
-docker build -t asap-server ./server
-
-# Build frontend
-docker build -t asap-client ./client
-```
-
 ### Run PostgreSQL
 
 ```bash
@@ -120,6 +108,7 @@ docker run -d \
 ```bash
 docker run -d \
   --name asap-client \
+  -e BACKEND_SERVER_URL="<BACKEND_URL>"
   -p 80:80 \
   sarthakg0yal/asap-client
 ```
