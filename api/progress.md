@@ -1,6 +1,6 @@
 # Progress API
 
-Analytics endpoints for training consistency, volume, muscle distribution, and personal bests.
+Analytics endpoints for training consistency, volume, and muscle distribution.
 
 ## Base URL
 
@@ -90,45 +90,6 @@ Returns a breakdown of training volume by primary muscle group, weighted by numb
 
 ---
 
-## Personal Bests
-
-Returns the highest weight ever recorded for each requested exercise.
-
-**Endpoint:** `GET /progress/pbs`
-
-**Query Parameters:**
-
-| Param         | Type   | Required | Description                          |
-| ------------- | ------ | -------- | ------------------------------------ |
-| `exerciseIds` | string | Yes      | Comma-separated list of exercise IDs |
-
-**Response:** `200 OK`
-
-```json
-[
-  {
-    "exerciseId": "exercise-uuid-1",
-    "exercise": "Barbell Bench Press",
-    "weight": 130,
-    "date": "2026-01-15T09:00:00.000Z"
-  },
-  {
-    "exerciseId": "exercise-uuid-2",
-    "exercise": "Back Squat",
-    "weight": 180,
-    "date": "2026-02-10T09:00:00.000Z"
-  }
-]
-```
-
-Results are sorted by `weight` descending. `date` is the date of the session where the personal best was set.
-
-**Errors:**
-
-- `400` - `exerciseIds` is required
-
----
-
 ## Example Usage
 
 ```javascript
@@ -148,10 +109,4 @@ const volume = await fetch(
 const muscles = await fetch("http://localhost:3000/api/progress/muscles", {
   headers: { Authorization: `Bearer ${token}` },
 }).then((r) => r.json());
-
-// Personal bests for bench press and squat
-const pbs = await fetch(
-  "http://localhost:3000/api/progress/pbs?exerciseIds=bench-id,squat-id",
-  { headers: { Authorization: `Bearer ${token}` } },
-).then((r) => r.json());
 ```

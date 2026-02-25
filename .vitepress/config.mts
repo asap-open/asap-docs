@@ -61,6 +61,8 @@ export default defineConfig({
           { text: "Exercises", link: "/api/exercises" },
           { text: "Profile", link: "/api/profile" },
           { text: "Weights", link: "/api/weights" },
+          { text: "Progress", link: "/api/progress" },
+          { text: "Personal Bests", link: "/api/pbs" },
         ],
       },
     ],
