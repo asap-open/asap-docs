@@ -37,10 +37,19 @@ Content-Type: application/json
   "exercises": [
     {
       "exerciseId": "exercise-uuid",
+      "isTimeBased": false,
       "sets": [
         { "weight": 100, "reps": 10, "isHardSet": true },
         { "weight": 100, "reps": 9, "isHardSet": true },
         { "weight": 100, "reps": 8, "isHardSet": true }
+      ]
+    },
+    {
+      "exerciseId": "plank-uuid",
+      "isTimeBased": true,
+      "sets": [
+        { "durationSec": 60, "isHardSet": true },
+        { "durationSec": 45, "isHardSet": true }
       ]
     }
   ]
@@ -56,8 +65,10 @@ Content-Type: application/json
 - `labels` (optional): Array of session labels (e.g. `"Chest"`, `"Back"`, `"Legs"`)
 - `exercises` (optional): Array of exercise entries
   - `exerciseId`: ID of the global exercise
-  - `sets[].weight`: Weight used (number)
-  - `sets[].reps`: Reps completed (number)
+  - `isTimeBased` (optional): `true` for duration-based exercises (e.g. Plank, Wall Sit) — defaults to `false`
+  - `sets[].weight`: Weight used in kg — ignored / stored as `0` for time-based exercises
+  - `sets[].reps`: Reps completed — ignored / stored as `0` for time-based exercises
+  - `sets[].durationSec`: Duration in seconds — required for time-based exercises, `null` for rep-based
   - `sets[].isHardSet` (optional): Whether it is a working set — defaults to `true`
 
 **Response:** `201 Created` — full session object with nested exercises and sets.
@@ -95,7 +106,44 @@ Authorization: Bearer {token}
       "startTime": "2026-02-23T09:00:00.000Z",
       "endTime": "2026-02-23T10:15:00.000Z",
       "labels": ["Chest"],
-      "exercises": [...],
+      "exercises": [
+        {
+          "exerciseId": "exercise-uuid",
+          "isTimeBased": false,
+          "sets": [
+            {
+              "weight": 100,
+              "reps": 10,
+              "durationSec": null,
+              "completed": true,
+              "isHardSet": true
+            }
+          ],
+          "exercise": {
+            "id": "exercise-uuid",
+            "name": "Barbell Bench Press",
+            "category": "Chest"
+          }
+        },
+        {
+          "exerciseId": "plank-uuid",
+          "isTimeBased": true,
+          "sets": [
+            {
+              "weight": 0,
+              "reps": 0,
+              "durationSec": 60,
+              "completed": true,
+              "isHardSet": true
+            }
+          ],
+          "exercise": {
+            "id": "plank-uuid",
+            "name": "Plank",
+            "category": "Core"
+          }
+        }
+      ],
       "stats": {
         "totalVolume": 9250,
         "duration": 75,
@@ -112,6 +160,8 @@ Authorization: Bearer {token}
   }
 }
 ```
+
+> **Note:** `stats.totalVolume` is calculated as `weight × reps` summed across all sets. Time-based exercises (`isTimeBased: true`) contribute `0` to volume since they have no meaningful weight × reps value.
 
 ---
 
@@ -159,7 +209,13 @@ Content-Type: application/json
   "exercises": [
     {
       "exerciseId": "exercise-uuid",
+      "isTimeBased": false,
       "sets": [{ "weight": 105, "reps": 8, "isHardSet": true }]
+    },
+    {
+      "exerciseId": "plank-uuid",
+      "isTimeBased": true,
+      "sets": [{ "durationSec": 60, "isHardSet": true }]
     }
   ]
 }
@@ -235,7 +291,7 @@ Authorization: Bearer {token}
 ## Example Usage
 
 ```javascript
-// Create a session
+// Create a session with mixed rep-based and time-based exercises
 const session = await fetch("http://localhost:3000/api/sessions", {
   method: "POST",
   headers: {
@@ -245,14 +301,23 @@ const session = await fetch("http://localhost:3000/api/sessions", {
   body: JSON.stringify({
     sessionName: "Leg Day",
     startTime: new Date().toISOString(),
-    labels: ["Legs"],
+    labels: ["Legs", "Core"],
     exercises: [
       {
         exerciseId: "squat-id",
+        isTimeBased: false,
         sets: [
           { weight: 140, reps: 5, isHardSet: true },
           { weight: 140, reps: 5, isHardSet: true },
           { weight: 140, reps: 5, isHardSet: true },
+        ],
+      },
+      {
+        exerciseId: "plank-id",
+        isTimeBased: true,
+        sets: [
+          { durationSec: 60, isHardSet: true },
+          { durationSec: 45, isHardSet: true },
         ],
       },
     ],
