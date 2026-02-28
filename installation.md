@@ -126,7 +126,7 @@ For development or if you prefer not to use Docker:
 git clone https://github.com/yourusername/asap.git
 cd asap
 
-# Install server dependencies
+# Install server dependencies (also runs prisma generate via postinstall)
 cd server
 yarn install
 
@@ -143,31 +143,63 @@ Install PostgreSQL and create a database:
 createdb asap
 ```
 
-### Step 3: Configure Environment
+### Step 3: Configure Server Environment
 
 Create `server/.env`:
 
 ```bash
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/asap"
 JWT_SECRET="your-jwt-secret"
+TOKEN_EXP="7d"
 PORT=3000
 NODE_ENV=development
+FRONTEND_DOMAIN="http://localhost:5173"
 ```
 
-### Step 4: Run Database Migrations
+| Variable          | Required | Description                                        |
+| ----------------- | -------- | -------------------------------------------------- |
+| `DATABASE_URL`    | ✅       | PostgreSQL connection string                       |
+| `JWT_SECRET`      | ✅       | Secret for signing JWTs — use a long random string |
+| `TOKEN_EXP`       | ✅       | Token lifetime (e.g. `7d`, `24h`, `60m`)           |
+| `PORT`            | ✅       | Port the API server listens on                     |
+| `NODE_ENV`        | ✅       | Set to `development`                               |
+| `FRONTEND_DOMAIN` | ✅       | Client origin allowed by CORS (Vite dev = `:5173`) |
+
+::: tip
+Generate a secure JWT secret with: `openssl rand -base64 32`
+:::
+
+### Step 4: Configure Client Environment
+
+Create `client/.env`:
+
+```bash
+BACKEND_SERVER_URL="http://localhost:3000"
+DOMAIN_NAME="localhost"
+```
+
+| Variable             | Required | Description                                                         |
+| -------------------- | -------- | ------------------------------------------------------------------- |
+| `BACKEND_SERVER_URL` | ✅       | URL of the API server — used by Vite's dev proxy                    |
+| `DOMAIN_NAME`        |          | Public hostname — used for HMR and `allowedHosts`, optional locally |
+
+### Step 5: Run Database Migrations
 
 ```bash
 cd server
-npx prisma migrate deploy
+npx prisma migrate dev
 ```
 
-### Step 5: Seed Initial Data (Optional)
+> **Note:** `prisma generate` runs automatically as part of `yarn install` (via the `postinstall` hook). If you ever update the schema manually, re-run `npx prisma generate` to rebuild the client.
+
+### Step 6: Seed Initial Data (Optional)
 
 ```bash
-yarn run seed
+cd server
+npx prisma db seed
 ```
 
-### Step 6: Start Development Servers
+### Step 7: Start Development Servers
 
 In one terminal (backend):
 
