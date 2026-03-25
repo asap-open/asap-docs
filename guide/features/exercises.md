@@ -34,8 +34,9 @@ Exercises are organized by muscle group:
 Find exercises quickly:
 
 1. Type in the search bar
-2. Results filter in real-time
-3. Search by exercise name or muscle group
+2. Results filter in real-time using local Fuse.js fuzzy search
+3. Search by exercise name, muscle group, category, or equipment
+4. Filtering remains instant because exercises are cached locally and refreshed in the background when the database version changes
 
 ## Exercise Details
 
@@ -99,7 +100,14 @@ Sort exercises by:
 
 ## Custom Exercises
 
-_Coming soon:_ Ability to add your own custom exercises to the library.
+You can create your own exercises and manage them directly:
+
+1. Open the **Exercises** screen
+2. Click **Add** to create a custom exercise
+3. Fill name, category, equipment, and target muscles
+4. Edit or delete your own custom exercises from the exercise card menu
+
+Custom exercises are user-scoped and appear in search and filters together with the global library.
 
 ## Exercise Variations
 

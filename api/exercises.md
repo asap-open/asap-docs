@@ -14,7 +14,9 @@ All endpoints require authentication.
 
 ## Search Exercises
 
-The primary endpoint for finding exercises. Supports full-text search and multiple filter dimensions simultaneously.
+Backend filter endpoint for paginated exercise browsing.
+
+> Note: The web client now performs fuzzy text search locally with Fuse.js using cached exercise data. This endpoint handles structured filters (muscle/category/equipment) and pagination.
 
 **Endpoint:** `GET /exercises/search`
 
@@ -22,7 +24,6 @@ The primary endpoint for finding exercises. Supports full-text search and multip
 
 | Param       | Type   | Description              |
 | ----------- | ------ | ------------------------ |
-| `q`         | string | Search term (name)       |
 | `muscle`    | string | Filter by muscle group   |
 | `category`  | string | Filter by category       |
 | `equipment` | string | Filter by equipment type |
@@ -55,20 +56,69 @@ The primary endpoint for finding exercises. Supports full-text search and multip
 
 ---
 
+## Exercise Cache Version
+
+Returns the latest update timestamp for exercises visible to the current user (global + their custom exercises).
+
+**Endpoint:** `GET /exercises/last-updated`
+
+**Response:** `200 OK`
+
+```json
+{
+  "data": {
+    "lastUpdated": "2026-03-25T15:48:37.114Z"
+  }
+}
+```
+
+---
+
+## Bulk Exercise Payload
+
+Returns the full exercise payload used by the client for local fuzzy search and offline-like instant filtering.
+
+**Endpoint:** `GET /exercises/all`
+
+**Response:** `200 OK`
+
+```json
+{
+  "data": [
+    {
+      "id": "barbell-bench-press",
+      "name": "Barbell Bench Press",
+      "category": "strength",
+      "equipment": "barbell",
+      "isBodyweightExercise": false,
+      "primaryMuscles": ["chest"],
+      "secondaryMuscles": ["triceps", "shoulders"],
+      "instructions": "...",
+      "isCustom": false,
+      "createdBy": null
+    }
+  ],
+  "meta": {
+    "total": 1500
+  }
+}
+```
+
+---
+
 ## List Exercises
 
-List exercises with optional search and muscle filter, using page-based pagination.
+Legacy page-based listing endpoint. Kept for backward compatibility.
 
 **Endpoint:** `GET /exercises`
 
 **Query Parameters:**
 
-| Param    | Type   | Default | Description             |
-| -------- | ------ | ------- | ----------------------- |
-| `search` | string | —       | Search by exercise name |
-| `muscle` | string | —       | Filter by muscle group  |
-| `page`   | number | `1`     | Page number             |
-| `limit`  | number | `20`    | Results per page        |
+| Param    | Type   | Default | Description            |
+| -------- | ------ | ------- | ---------------------- |
+| `muscle` | string | —       | Filter by muscle group |
+| `page`   | number | `1`     | Page number            |
+| `limit`  | number | `20`    | Results per page       |
 
 **Response:** `200 OK`
 
@@ -260,11 +310,22 @@ Authorization: Bearer {token}
 ## Example Usage
 
 ```javascript
-// Search for bench press variations
+// Filter chest exercises from backend
 const results = await fetch(
-  "http://localhost:3000/api/exercises/search?q=bench&muscle=Chest",
+  "http://localhost:3000/api/exercises/search?muscle=chest&limit=20&offset=0",
   { headers: { Authorization: `Bearer ${token}` } },
 ).then((r) => r.json());
+
+// Check cache version
+const version = await fetch(
+  "http://localhost:3000/api/exercises/last-updated",
+  { headers: { Authorization: `Bearer ${token}` } },
+).then((r) => r.json());
+
+// Fetch full exercise dataset for local Fuse.js search
+const all = await fetch("http://localhost:3000/api/exercises/all", {
+  headers: { Authorization: `Bearer ${token}` },
+}).then((r) => r.json());
 
 // Get all available muscle groups
 const { data: muscles } = await fetch(

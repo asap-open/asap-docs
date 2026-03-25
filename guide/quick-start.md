@@ -53,7 +53,7 @@ Track your body weight to monitor body composition changes alongside your traini
 ### Step 2: Add exercises
 
 1. Click **"Add Exercise"**
-2. Browse or search the exercise library — 1000+ exercises organized by muscle group
+2. Browse or search the exercise library — 1000+ exercises with instant fuzzy search
 3. Filter by category if needed
 4. Click an exercise to add it to your session
 
@@ -62,10 +62,12 @@ Track your body weight to monitor body composition changes alongside your traini
 For each exercise:
 
 1. Enter the weight used (kg or lbs based on your preference)
-2. Enter the number of reps completed
+2. Enter reps for rep-based sets, or switch the exercise to time mode and enter duration (seconds)
 3. Optionally add set notes — e.g., "RPE 8", "felt easy, increase next time", "form breakdown on last rep"
 4. Click **"Add Set"**
 5. Repeat for all working sets
+
+For time-based sets, you can use the built-in stopwatch modal to capture elapsed time and write it directly into the set.
 
 ### Step 4: Complete the workout
 

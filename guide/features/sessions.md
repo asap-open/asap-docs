@@ -28,10 +28,21 @@ You can add as many exercises as needed for your workout.
 For each exercise:
 
 1. **Enter weight used** - In kg or lbs based on your preference
-2. **Enter reps completed** - Actual reps performed
+2. **Enter reps completed** for rep-based exercises, or **duration in seconds** for time-based exercises
 3. **Add set notes** (optional) - Form cues, RPE, feeling, etc.
 4. Click **"Add Set"** to log the set
 5. Repeat for all working sets
+
+### Time-Based Sets and Stopwatch
+
+ASAP supports both rep-based and time-based logging per exercise:
+
+1. Open the exercise menu (`...`) and switch between **Reps** and **Time** mode
+2. In **Time** mode, each set stores `durationSec` instead of reps
+3. Use the timer button on a set to open the stopwatch modal
+4. Start, stop, and reset the set timer; stopping writes elapsed seconds back to the set
+
+This is useful for planks, wall sits, carries, and other duration-focused movements.
 
 #### Set Notes Examples
 
