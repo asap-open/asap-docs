@@ -49,7 +49,7 @@ cp .env.with-db .env
 cp .env.external-db .env
 ```
 
-Open `.env` in your editor and update at minimum `JWT_SECRET`, `DOMAIN_NAME`, and (for Option B) `DATABASE_URL`.
+Open `.env` in your editor and update at minimum `JWT_SECRET`, `DOMAIN_NAME`, `FRONTEND_DOMAIN`, and (for Option B) `DATABASE_URL`.
 
 ### Step 4: Start the stack
 
@@ -98,6 +98,9 @@ docker run -d \
   --link asap-db:db \
   -e DATABASE_URL="postgresql://postgres:postgres@db:5432/asap" \
   -e JWT_SECRET="your-jwt-secret" \
+  -e TOKEN_EXP="7d" \
+  -e FRONTEND_DOMAIN="http://localhost" \
+  -e NODE_ENV="production" \
   -e PORT=3000 \
   -p 3000:3000 \
   sarthakg0yal/asap-server
@@ -108,7 +111,8 @@ docker run -d \
 ```bash
 docker run -d \
   --name asap-client \
-  -e BACKEND_SERVER_URL="<BACKEND_URL>"
+  -e BACKEND_SERVER_URL="<BACKEND_URL>" \
+  -e DOMAIN_NAME="localhost" \
   -p 80:80 \
   sarthakg0yal/asap-client
 ```
@@ -148,21 +152,21 @@ createdb asap
 Create `server/.env`:
 
 ```bash
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/asap"
-JWT_SECRET="your-jwt-secret"
-TOKEN_EXP="7d"
+DATABASE_URL=postgresql://postgres:12345@localhost:5432/asap
+JWT_SECRET=change_this_to_a_long_random_secret
 PORT=3000
 NODE_ENV=development
-FRONTEND_DOMAIN="http://localhost:5173"
+TOKEN_EXP=7d
+FRONTEND_DOMAIN=http://localhost:5173
 ```
 
 | Variable          | Required | Description                                        |
 | ----------------- | -------- | -------------------------------------------------- |
 | `DATABASE_URL`    | ✅       | PostgreSQL connection string                       |
 | `JWT_SECRET`      | ✅       | Secret for signing JWTs — use a long random string |
-| `TOKEN_EXP`       | ✅       | Token lifetime (e.g. `7d`, `24h`, `60m`)           |
-| `PORT`            | ✅       | Port the API server listens on                     |
-| `NODE_ENV`        | ✅       | Set to `development`                               |
+| `PORT`            |          | Port the API server listens on (default: `3000`)   |
+| `NODE_ENV`        |          | Runtime mode (development/production)              |
+| `TOKEN_EXP`       |          | Token lifetime (default: `7d`)                     |
 | `FRONTEND_DOMAIN` | ✅       | Client origin allowed by CORS (Vite dev = `:5173`) |
 
 ::: tip
@@ -174,14 +178,16 @@ Generate a secure JWT secret with: `openssl rand -base64 32`
 Create `client/.env`:
 
 ```bash
-BACKEND_SERVER_URL="http://localhost:3000"
-DOMAIN_NAME="localhost"
+BACKEND_SERVER_URL=http://localhost:3000
+DOMAIN_NAME=localhost
+CAPACITOR_ANDROID_STUDIO_PATH=/home/<your-user>/.android-studio/bin/studio.sh
 ```
 
-| Variable             | Required | Description                                                         |
-| -------------------- | -------- | ------------------------------------------------------------------- |
-| `BACKEND_SERVER_URL` | ✅       | URL of the API server — used by Vite's dev proxy                    |
-| `DOMAIN_NAME`        |          | Public hostname — used for HMR and `allowedHosts`, optional locally |
+| Variable                        | Required | Description                                                         |
+| ------------------------------- | -------- | ------------------------------------------------------------------- |
+| `BACKEND_SERVER_URL`            | ✅       | URL of the API server — used by Vite's dev proxy                    |
+| `DOMAIN_NAME`                   |          | Public hostname — used for HMR and `allowedHosts`, optional locally |
+| `CAPACITOR_ANDROID_STUDIO_PATH` |          | Path to Android Studio binary for Capacitor Android workflows       |
 
 ### Step 5: Run Database Migrations
 
