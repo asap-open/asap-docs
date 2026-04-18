@@ -1,238 +1,99 @@
 # Progress Tracking
 
-Monitor your strength gains and body composition changes over time.
+The Progress tab is the analytics center of ASAP. It combines consistency, workload, strength trends, and personal-best history into a single workflow.
 
 ## Overview
 
-ASAP's Progress tab provides comprehensive analytics on your training and body metrics. Track personal bests, volume trends, consistency, and body weight changes.
+Progress is powered by backend-first V2 endpoints and organized into focused panels:
 
-## Progress Dashboard
+- Summary and KPI snapshot
+- Consistency calendar with drilldown
+- Workload time series and compare mode
+- Strength trend (e1RM) by exercise
+- Muscle-balance distribution and filters
+- PB timeline with jump-to-day behavior
 
-### Accessing Progress
+## Getting Started
 
-1. Go to **Progress** tab in bottom navigation
-2. View all analytics in one place
-3. Use time filters to adjust date ranges
+1. Open **Progress** from the bottom navigation.
+2. Pick a training mode: **Strength**, **Balanced**, or **Body**.
+3. Pick a range: **1W**, **1M**, **3M**, **6M**, **1Y**, or **ALL**.
+4. Click a calendar day to open day-level drilldown.
 
-### Time Filters
+## Progress Controls
 
-View data for different periods:
+The mode and range selectors are now part of page content (centered near the top), not fixed in the header. They scroll with the page and update all panels together.
 
-- **Week** - Last 7 days
-- **Month** - Last 30 days
-- **3 Months** - Last 90 days
-- **Year** - Last 365 days
-- **All Time** - Complete training history
+## Sticky Header Behavior
 
-## Body Weight Tracking
+The Progress title header is intentionally minimal and hides while scrolling down to maximize chart space on mobile.
 
-### Weight Chart
+- Near top of page: header is visible
+- Scrolled down: header collapses
+- Returning near top: header reappears
 
-Visual representation of your weight over time:
+This animation uses Framer Motion for smoother transitions.
 
-- Line graph showing weight trends
-- Colored indicators for gain/loss
-- Hover to see exact dates and values
+## Consistency Calendar
 
-### Weight Change
+The calendar panel highlights recent training with a compact weekly strip and metrics summary.
 
-Compare current weight to previous periods:
+- Switch visual metric: sessions, volume, or intensity
+- Select a day to drill into sessions/exercise breakdown
+- View current and best streak context
 
-- Week over week change
-- Month over month change
-- Percentage change
-- Visual indicators (↑ gain, ↓ loss)
+On mobile, selecting a day opens a compact **Day Detail** bottom sheet with session/set/volume summary.
 
-### BMI Calculation
+## Day Detail Drilldown
 
-Automatically calculated BMI:
+Day detail loads only after explicit day selection.
 
-- Based on current weight and height
-- Visual indicator showing healthy ranges
-- Updated when logging new weight
+- Session-level list (duration, exercise count, set count)
+- Exercise breakdown (sets and volume per exercise)
+- Optional muscle-group filter from the insights panel
 
-## Personal Bests
+## Workload Panel
 
-### PR Dashboard
+Workload volume is available in day/week/month granularity with optional previous-period comparison.
 
-View all your personal records:
+- Toggle granularity: `day`, `week`, `month`
+- Toggle compare mode to view previous period buckets
+- Hover/focus bars to inspect exact values
 
-- Exercise name
-- Best weight lifted
-- Best reps at a given weight
-- Date achieved
-- Comparison to previous PR
+## Strength Trend Panel
 
-### Filtering PRs
+Exercise-specific strength progression is computed from estimated 1RM (`e1RM`).
 
-Filter personal bests by:
+- Select exercise from dropdown
+- Inspect latest, best, and change %
+- Click/hover points to compare against previous point
 
-- Muscle group
-- Exercise category
-- Date range
-- Recent vs. all-time
+## Muscle Balance and Status
 
-### PR Notifications
+Muscle balance shows set distribution by movement group (`push`, `pull`, `legs`, `core`, `other`) and compares it to mode-aware targets.
 
-When you set a new PR:
+Training Status adds workload risk signals:
 
-- Automatic detection during session logging
-- Visual celebration on completion
-- Added to PR history
+- ACWR
+- Ramp rate
+- Confidence and recommendation text
 
-## Volume Statistics
+## PB Timeline
 
-### Total Volume
+PB Timeline surfaces PR events across the selected range.
 
-Track your training volume:
+- Click an event to focus that exercise
+- Event selection can jump context to the achieved day
 
-- Weekly volume (sets × reps × weight)
-- Monthly volume
-- Volume by muscle group
-- Volume by exercise
+## Tips
 
-### Volume Trends
-
-Identify patterns:
-
-- Increasing volume = progressive overload
-- Decreasing volume = deload or fatigue
-- Consistent volume = maintenance
-
-### Volume Distribution
-
-See how volume is distributed:
-
-- **Pie chart** - Volume by muscle group
-- Identify imbalances
-- Adjust training accordingly
-
-## Training Consistency
-
-### Consistency Heatmap
-
-Visual calendar showing:
-
-- Days you trained (colored squares)
-- Rest days (gray squares)
-- Training frequency patterns
-- Streaks and gaps
-
-### Workout Frequency
-
-Statistics on training frequency:
-
-- Workouts per week (average)
-- Longest training streak
-- Most active month
-- Current streak
-
-### Training Calendar
-
-Month view of all sessions:
-
-- Click any day to see session details
-- Visual density shows training volume
-- Easy to spot patterns and gaps
-
-## Muscle Distribution
-
-### Muscle Group Analysis
-
-See which muscles you're training:
-
-- **Bar chart** - Sets per muscle group
-- Identify overworked/underworked areas
-- Balance your programming
-
-### Exercise Variety
-
-Track exercise diversity:
-
-- Number of unique exercises
-- Frequency of each exercise
-- Identify if you're too focused on certain movements
-
-## Charts and Graphs
-
-### Weight Progression
-
-Track strength gains:
-
-- Exercise-specific graphs
-- Weight over time
-- Volume over time
-- Reps at a given weight
-
-### Body Composition
-
-Monitor body changes:
-
-- Weight trends
-- Target weight progress
-- BMI changes
-
-## Using Progress Data
-
-### Identify Plateaus
-
-Look for:
-
-- Flat lines in weight progression
-- Decreasing volume without deload
-- No PRs in extended period
-
-**Solution:** Adjust programming, increase volume, or change exercise variations
-
-### Optimize Training Frequency
-
-Use consistency data:
-
-- Are you training enough?
-- Too much volume causing fatigue?
-- Balance training and recovery
-
-### Set Goals
-
-Based on your data:
-
-- **Short-term:** Beat last week's volume
-- **Medium-term:** Set new PR within 4 weeks
-- **Long-term:** Add 20kg to squat by year end
-
-## Best Practices
-
-### Regular Reviews
-
-Check progress weekly:
-
-- Are you progressing as planned?
-- Any concerning trends?
-- Time to adjust programming?
-
-### Context Matters
-
-Consider external factors:
-
-- Sleep quality
-- Stress levels
-- Nutrition changes
-- Life events
-
-### Long-Term Focus
-
-Don't obsess over daily/weekly fluctuations:
-
-- Look at monthly trends
-- Progress isn't always linear
-- Deloads and recovery are normal
-
-## Export Data
-
-_Coming soon:_ Export your progress data for external analysis or backup.
+- Review **weekly trends** instead of day-to-day noise.
+- Use calendar drilldown for adherence and recovery patterns.
+- Use muscle-balance filters when sessions feel biased toward one movement pattern.
 
 ## Next Steps
 
-- [Set up your profile](/guide/features/profile)
-- [Log workout sessions](/guide/features/sessions)
-- [Browse exercise library](/guide/features/exercises)
+- [Workout Sessions](/guide/features/sessions)
+- [Exercise Library](/guide/features/exercises)
+- [Profile & Stats](/guide/features/profile)
+- [Progress API](/api/progress)

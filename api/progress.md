@@ -1,6 +1,6 @@
 # Progress API
 
-Analytics endpoints for training consistency, volume, and muscle distribution.
+Backend endpoints for the V2 Progress dashboard (summary, calendar, workload, strength trend, day drilldown, and balance analytics).
 
 ## Base URL
 
@@ -10,11 +10,9 @@ http://localhost:3000/api/progress
 
 All endpoints require authentication.
 
----
+## Common Query Parameters
 
-## Range Parameter
-
-All progress endpoints accept an optional `range` query parameter to filter by time period:
+### `range`
 
 | Value | Description    |
 | ----- | -------------- |
@@ -25,88 +23,129 @@ All progress endpoints accept an optional `range` query parameter to filter by t
 | `1Y`  | Last 12 months |
 | `ALL` | All time       |
 
-If omitted, all-time data is returned.
+### `mode`
+
+Used by summary and muscle-balance endpoints.
+
+| Value      | Description                     |
+| ---------- | ------------------------------- |
+| `Strength` | Strength-priority targeting     |
+| `Balanced` | Even distribution               |
+| `Body`     | Physique/body-composition focus |
+
+## V2 Endpoints
+
+### Summary
+
+**Endpoint:** `GET /summary`
+
+**Query:** `range`, `mode`
+
+Returns adherence, streaks, totals, and trend percentages.
 
 ---
 
-## Consistency Heatmap
+### Calendar
 
-Returns per-day session counts, suitable for rendering a calendar heatmap.
+**Endpoint:** `GET /calendar`
 
-**Endpoint:** `GET /progress/consistency`
+**Query:** `range`, `metric`
 
-**Query Parameters:** `range`
+`metric` values: `sessions`, `volume`, `intensity`
 
-**Response:** `200 OK`
-
-```json
-[
-  { "day": "2026-02-01", "value": 1 },
-  { "day": "2026-02-03", "value": 2 },
-  { "day": "2026-02-05", "value": 1 }
-]
-```
-
-Each entry represents a date on which at least one session was logged. `value` is the number of sessions on that day.
+Returns day-level calendar entries and streak summary.
 
 ---
 
-## Volume Stats
+### Time Series
 
-Returns per-day total training volume (weight × reps summed across all sets), suitable for a bar or line chart.
+**Endpoint:** `GET /timeseries`
 
-**Endpoint:** `GET /progress/volume`
+**Query:** `range`, `granularity`, `compare`
 
-**Query Parameters:** `range`
+`granularity` values: `day`, `week`, `month`  
+`compare` values: `true`, `false`
 
-**Response:** `200 OK`
-
-```json
-[
-  { "day": "2026-02-01", "volume": 12500 },
-  { "day": "2026-02-03", "volume": 9800 }
-]
-```
+Returns bucketized workload series for current period and optional previous period.
 
 ---
 
-## Muscle Distribution
+### Muscle Balance
 
-Returns a breakdown of training volume by primary muscle group, weighted by number of sets performed. Suitable for a radar/spider chart.
+**Endpoint:** `GET /muscle-balance`
 
-**Endpoint:** `GET /progress/muscles`
+**Query:** `range`, `mode`
 
-**Query Parameters:** `range`
-
-**Response:** `200 OK`
-
-```json
-[
-  { "muscle": "Chest", "value": 36 },
-  { "muscle": "Back", "value": 48 },
-  { "muscle": "Legs", "value": 30 }
-]
-```
+Returns set distribution by muscle and by grouped movement patterns (`push/pull/legs/core/other`) with target alignment.
 
 ---
+
+### PB Timeline
+
+**Endpoint:** `GET /pbs/timeline`
+
+**Query:** `range`, optional `exerciseId`, optional `metric`
+
+Returns PR events timeline and cadence summary.
+
+---
+
+### Strength Trend (e1RM)
+
+**Endpoint:** `GET /strength/1rm`
+
+**Query:** `range`, `exerciseId`
+
+Returns estimated 1RM series and summary (latest/best/change).
+
+---
+
+### Workload
+
+**Endpoint:** `GET /workload`
+
+**Query:** `range`
+
+Returns workload status, ACWR, ramp rate, confidence, recommendation, and supporting series.
+
+---
+
+### Day Detail
+
+**Endpoint:** `GET /day-detail`
+
+**Query:** `date` (format: `YYYY-MM-DD`)
+
+Returns session-level and exercise-level breakdown for the selected day.
+
+## Legacy Endpoints (Compatibility)
+
+These endpoints remain available while older clients migrate:
+
+- `GET /consistency`
+- `GET /volume`
+- `GET /muscles`
 
 ## Example Usage
 
 ```javascript
-// Consistency heatmap for the last 3 months
-const consistency = await fetch(
-  "http://localhost:3000/api/progress/consistency?range=3M",
-  { headers: { Authorization: `Bearer ${token}` } },
+const headers = { Authorization: `Bearer ${token}` };
+
+// V2 summary card data
+const summary = await fetch(
+  "http://localhost:3000/api/progress/summary?range=1M&mode=Balanced",
+  { headers },
 ).then((r) => r.json());
 
-// Volume chart for the last month
-const volume = await fetch(
-  "http://localhost:3000/api/progress/volume?range=1M",
-  { headers: { Authorization: `Bearer ${token}` } },
+// Calendar drilldown data
+const calendar = await fetch(
+  "http://localhost:3000/api/progress/calendar?range=1M&metric=sessions",
+  { headers },
 ).then((r) => r.json());
 
-// Muscle distribution (all time)
-const muscles = await fetch("http://localhost:3000/api/progress/muscles", {
-  headers: { Authorization: `Bearer ${token}` },
-}).then((r) => r.json());
+// Day detail for selected date
+const dayDetail = await fetch(
+  "http://localhost:3000/api/progress/day-detail?date=2026-04-18",
+  { headers },
+).then((r) => r.json());
 ```

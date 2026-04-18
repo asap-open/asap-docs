@@ -31,7 +31,7 @@ All endpoints require authentication.
 
 Returns all stored personal bests for the authenticated user. Optionally filter by metric and/or exercise.
 
-**Endpoint:** `GET /pbs`
+**Endpoint:** `GET /`
 
 **Query Parameters:**
 
@@ -74,7 +74,7 @@ Returns all stored personal bests for the authenticated user. Optionally filter 
 
 Returns all metric records for a single exercise.
 
-**Endpoint:** `GET /pbs/:exerciseId`
+**Endpoint:** `GET /:exerciseId`
 
 **Response:** `200 OK`
 
@@ -88,7 +88,7 @@ Scans the user's full training history and upserts the best value for every metr
 
 Automatically called when a new exercise is added to the tracked list.
 
-**Endpoint:** `POST /pbs/sync`
+**Endpoint:** `POST /sync`
 
 **Request body:** none
 
@@ -111,7 +111,7 @@ Checks a single completed session against stored personal bests and upserts any 
 
 Call this immediately after saving a session.
 
-**Endpoint:** `POST /pbs/check-session/:sessionId`
+**Endpoint:** `POST /check-session/:sessionId`
 
 **Request body:** none
 
@@ -143,7 +143,7 @@ Call this immediately after saving a session.
 
 Deletes every metric record for a given exercise. Called automatically when an exercise is removed from the tracked list in Settings.
 
-**Endpoint:** `DELETE /pbs/:exerciseId`
+**Endpoint:** `DELETE /:exerciseId`
 
 **Response:** `200 OK`
 
@@ -162,7 +162,7 @@ Deletes every metric record for a given exercise. Called automatically when an e
 
 Removes one specific metric record for an exercise.
 
-**Endpoint:** `DELETE /pbs/:exerciseId/:metric`
+**Endpoint:** `DELETE /:exerciseId/:metric`
 
 **Response:** `200 OK`
 

@@ -18,7 +18,7 @@ Backend filter endpoint for paginated exercise browsing.
 
 > Note: The web client now performs fuzzy text search locally with Fuse.js using cached exercise data. This endpoint handles structured filters (muscle/category/equipment) and pagination.
 
-**Endpoint:** `GET /exercises/search`
+**Endpoint:** `GET /search`
 
 **Query Parameters:**
 
@@ -60,7 +60,7 @@ Backend filter endpoint for paginated exercise browsing.
 
 Returns the latest update timestamp for exercises visible to the current user (global + their custom exercises).
 
-**Endpoint:** `GET /exercises/last-updated`
+**Endpoint:** `GET /last-updated`
 
 **Response:** `200 OK`
 
@@ -78,7 +78,7 @@ Returns the latest update timestamp for exercises visible to the current user (g
 
 Returns the full exercise payload used by the client for local fuzzy search and offline-like instant filtering.
 
-**Endpoint:** `GET /exercises/all`
+**Endpoint:** `GET /all`
 
 **Response:** `200 OK`
 
@@ -110,7 +110,7 @@ Returns the full exercise payload used by the client for local fuzzy search and 
 
 Legacy page-based listing endpoint. Kept for backward compatibility.
 
-**Endpoint:** `GET /exercises`
+**Endpoint:** `GET /`
 
 **Query Parameters:**
 
@@ -140,7 +140,7 @@ Legacy page-based listing endpoint. Kept for backward compatibility.
 
 Return all exercises targeting a specific muscle group.
 
-**Endpoint:** `GET /exercises/by-muscle/:muscle`
+**Endpoint:** `GET /by-muscle/:muscle`
 
 **Response:** `200 OK`
 
@@ -158,7 +158,7 @@ Return all exercises targeting a specific muscle group.
 
 Return all exercises in a specific category.
 
-**Endpoint:** `GET /exercises/by-category/:category`
+**Endpoint:** `GET /by-category/:category`
 
 **Response:** `200 OK`
 
@@ -178,7 +178,7 @@ Three endpoints return the available filter values for building UI filter lists.
 
 ### Get All Muscle Groups
 
-**Endpoint:** `GET /exercises/muscles`
+**Endpoint:** `GET /muscles`
 
 **Response:** `200 OK`
 
@@ -188,7 +188,7 @@ Three endpoints return the available filter values for building UI filter lists.
 
 ### Get All Categories
 
-**Endpoint:** `GET /exercises/categories`
+**Endpoint:** `GET /categories`
 
 **Response:** `200 OK`
 
@@ -209,7 +209,7 @@ Three endpoints return the available filter values for building UI filter lists.
 
 ### Get All Equipment
 
-**Endpoint:** `GET /exercises/equipment`
+**Endpoint:** `GET /equipment`
 
 **Response:** `200 OK`
 
@@ -223,7 +223,7 @@ Three endpoints return the available filter values for building UI filter lists.
 
 Add a user-specific exercise to the library.
 
-**Endpoint:** `POST /exercises`
+**Endpoint:** `POST /`
 
 **Headers:**
 
@@ -262,7 +262,7 @@ Content-Type: application/json
 
 Update a user-created exercise. You can only edit exercises you created.
 
-**Endpoint:** `PUT /exercises/:id`
+**Endpoint:** `PUT /:id`
 
 **Headers:**
 
@@ -286,7 +286,7 @@ Content-Type: application/json
 
 Delete a user-created exercise. You can only delete exercises you created.
 
-**Endpoint:** `DELETE /exercises/:id`
+**Endpoint:** `DELETE /:id`
 
 **Headers:**
 

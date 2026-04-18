@@ -16,7 +16,7 @@ All endpoints require authentication.
 
 Retrieve the current user's profile information.
 
-**Endpoint:** `GET /profile`
+**Endpoint:** `GET /`
 
 **Headers:**
 
@@ -60,7 +60,7 @@ Authorization: Bearer {token}
 
 Update user profile information.
 
-**Endpoint:** `PUT /profile`
+**Endpoint:** `PUT /`
 
 **Headers:**
 
@@ -117,7 +117,7 @@ Content-Type: application/json
 
 Change the user's username.
 
-**Endpoint:** `PUT /profile/username`
+**Endpoint:** `PUT /username`
 
 **Headers:**
 

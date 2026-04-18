@@ -16,7 +16,7 @@ All endpoints require authentication.
 
 Start and log a new workout session.
 
-**Endpoint:** `POST /sessions`
+**Endpoint:** `POST /`
 
 **Headers:**
 
@@ -79,7 +79,7 @@ Content-Type: application/json
 
 Retrieve the current user's workout history.
 
-**Endpoint:** `GET /sessions`
+**Endpoint:** `GET /`
 
 **Headers:**
 
@@ -169,7 +169,7 @@ Authorization: Bearer {token}
 
 Get a single session with all exercises and sets.
 
-**Endpoint:** `GET /sessions/:id`
+**Endpoint:** `GET /:id`
 
 **Headers:**
 
@@ -190,7 +190,7 @@ Authorization: Bearer {token}
 
 Replace the full state of an existing session (used to sync a workout in progress or edit after the fact).
 
-**Endpoint:** `PUT /sessions/:id`
+**Endpoint:** `PUT /:id`
 
 **Headers:**
 
@@ -235,7 +235,7 @@ All fields are optional. When `exercises` is provided the existing exercise entr
 
 Permanently remove a session and all its exercise entries and sets.
 
-**Endpoint:** `DELETE /sessions/:id`
+**Endpoint:** `DELETE /:id`
 
 **Headers:**
 
@@ -259,7 +259,7 @@ Authorization: Bearer {token}
 
 Get per-day workout counts, total volume, and total duration for use in calendar/heatmap views.
 
-**Endpoint:** `GET /sessions/stats/calendar`
+**Endpoint:** `GET /stats/calendar`
 
 **Headers:**
 

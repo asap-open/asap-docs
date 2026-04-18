@@ -84,7 +84,7 @@ See [Workout Sessions](/guide/features/sessions) for a full walkthrough.
 
 1. Go to the **Progress** tab
 2. View analytics — body weight trends, personal bests, volume statistics, training consistency
-3. Use the time filter to adjust the date range: **Week**, **Month**, **3 Months**, **Year**, or **All Time**
+3. Use the time filter to adjust the date range: **1W**, **1M**, **3M**, **6M**, **1Y**, or **ALL**
 
 ### Exercise library
 

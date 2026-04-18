@@ -16,7 +16,7 @@ All endpoints require authentication.
 
 Record a new body weight measurement.
 
-**Endpoint:** `POST /weights`
+**Endpoint:** `POST /`
 
 **Headers:**
 
@@ -63,7 +63,7 @@ Content-Type: application/json
 
 Retrieve weight logs for the current user, ordered by date ascending (suitable for charting).
 
-**Endpoint:** `GET /weights/history`
+**Endpoint:** `GET /history`
 
 **Headers:**
 
@@ -148,8 +148,6 @@ const chartData = history.map((log) => ({
   y: log.weightKg,
 }));
 ```
-
-- "After vacation"
 
 ## Integration with Profile
 
