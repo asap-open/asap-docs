@@ -111,7 +111,7 @@ docker run -d \
 ```bash
 docker run -d \
   --name asap-client \
-  -e BACKEND_SERVER_URL="<BACKEND_URL>" \
+  -e VITE_BACKEND_SERVER_URL="<BACKEND_URL>" \
   -e DOMAIN_NAME="localhost" \
   -p 80:80 \
   sarthakg0yal/asap-client
@@ -178,14 +178,14 @@ Generate a secure JWT secret with: `openssl rand -base64 32`
 Create `client/.env`:
 
 ```bash
-BACKEND_SERVER_URL=http://localhost:3000
+VITE_BACKEND_SERVER_URL=http://localhost:3000
 DOMAIN_NAME=localhost
 CAPACITOR_ANDROID_STUDIO_PATH=/home/<your-user>/.android-studio/bin/studio.sh
 ```
 
 | Variable                        | Required | Description                                                         |
 | ------------------------------- | -------- | ------------------------------------------------------------------- |
-| `BACKEND_SERVER_URL`            | ✅       | URL of the API server — used by Vite's dev proxy                    |
+| `VITE_VITE_BACKEND_SERVER_URL`            | ✅       | URL of the API server                     |
 | `DOMAIN_NAME`                   |          | Public hostname — used for HMR and `allowedHosts`, optional locally |
 | `CAPACITOR_ANDROID_STUDIO_PATH` |          | Path to Android Studio binary for Capacitor Android workflows       |
 
