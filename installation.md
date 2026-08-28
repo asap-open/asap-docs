@@ -185,9 +185,18 @@ CAPACITOR_ANDROID_STUDIO_PATH=/home/<your-user>/.android-studio/bin/studio.sh
 
 | Variable                        | Required | Description                                                         |
 | ------------------------------- | -------- | ------------------------------------------------------------------- |
-| `VITE_VITE_BACKEND_SERVER_URL`            | ✅       | URL of the API server                     |
+| `VITE_BACKEND_SERVER_URL`       | ✅       | Backend API URL — injected into Nginx at runtime; the JS always uses a relative `/api` path that Nginx proxies to this address |
 | `DOMAIN_NAME`                   |          | Public hostname — used for HMR and `allowedHosts`, optional locally |
 | `CAPACITOR_ANDROID_STUDIO_PATH` |          | Path to Android Studio binary for Capacitor Android workflows       |
+
+::: tip How API routing works
+The compiled JavaScript always uses a **relative `/api` path** (e.g. `fetch('/api/auth/signin')`). Nginx inside the client container proxies those requests to `VITE_BACKEND_SERVER_URL` at runtime via an `envsubst` template. This means the backend URL is **never baked into the JS bundle** — the same image works in Docker Compose, bare Docker, and Kubernetes without rebuilding.
+
+Set `VITE_BACKEND_SERVER_URL` to the **internal service name or cluster DNS** where Nginx can reach your backend:
+- Docker Compose: `http://server:3000` (internal network)
+- Kubernetes: `http://asap-server:3000` (service name)
+- Bare Docker: `http://asap-server:3000` or `http://host.docker.internal:3000`
+:::
 
 ### Step 5: Run Database Migrations
 
