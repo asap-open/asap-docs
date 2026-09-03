@@ -1,6 +1,6 @@
 # Progress API
 
-Backend endpoint for the simplified Progress & Analytics dashboard (KPI metrics, GitHub-style consistency heatmap, and time-series charts).
+Backend endpoints for the Progress & Analytics dashboard (KPI metrics, GitHub-style consistency heatmap with year filtering, volume tracking, and time-series charts).
 
 ## Base URL
 
@@ -14,11 +14,51 @@ All endpoints require authentication (`Bearer <token>`).
 
 ## Endpoints
 
-### 1. Get Progress Overview
+### 1. Get Consistency Heatmap
 
-Retrieves all progress metrics, activity heatmap distribution, and time-series data for the selected range and filters in a single request.
+Fetches workout frequency and activity levels day-by-day for a specific calendar year or the trailing 365 days.
 
-**Endpoint:** `GET /overview`
+**Endpoint:** `GET /heatmap`
+
+**Authentication:** Required
+
+#### Query Parameters
+
+| Parameter | Type | Required | Default | Description |
+| --------- | ---- | -------- | ------- | ----------- |
+| `year` | `number` | No | Trailing 365 days | Calendar year to fetch (e.g. `2026`, `2025`) |
+
+#### Response
+
+```json
+{
+  "year": 2026,
+  "startDate": "2026-01-01",
+  "endDate": "2026-12-31",
+  "totalWorkouts": 112,
+  "currentStreak": 4,
+  "heatmap": [
+    {
+      "date": "2026-01-01",
+      "count": 1,
+      "level": 1
+    },
+    {
+      "date": "2026-01-02",
+      "count": 0,
+      "level": 0
+    }
+  ]
+}
+```
+
+---
+
+### 2. Get Progress Metrics (Cards)
+
+Calculates the 4 primary KPI metrics: consistency rate, active workout days, current active streak, and cumulative volume.
+
+**Endpoint:** `GET /metrics`
 
 **Authentication:** Required
 
@@ -27,13 +67,7 @@ Retrieves all progress metrics, activity heatmap distribution, and time-series d
 | Parameter | Type | Required | Default | Description |
 | --------- | ---- | -------- | ------- | ----------- |
 | `range` | `string` | No | `1M` | Time window: `1W`, `1M`, `3M`, `6M`, `1Y`, `ALL` |
-| `metric` | `string` | No | `volume` | Chart metric type: `volume` or `weight` |
-| `labels` | `string` | No | `""` | Comma-separated list of session labels to filter volume (e.g. `Chest,Arms`) |
-
-#### Session Labels Filter Options
-
-When filtering by `labels`, you can provide one or more of the following `SessionLabel` enum values:
-`Chest`, `Back`, `Shoulders`, `Arms`, `Core`, `Legs`, `Glutes`, `FullBody`, `Cardio`, `Mobility`, `Stretching`.
+| `labels` | `string` | No | `""` | Comma-separated list of session labels |
 
 #### Response
 
@@ -45,18 +79,33 @@ When filtering by `labels`, you can provide one or more of the following `Sessio
     "currentStreak": 4,
     "totalVolume": 48250
   },
-  "heatmap": [
-    {
-      "date": "2025-08-28",
-      "count": 1,
-      "level": 1
-    },
-    {
-      "date": "2025-08-29",
-      "count": 0,
-      "level": 0
-    }
-  ],
+  "range": "1M",
+  "selectedLabels": []
+}
+```
+
+---
+
+### 3. Get Volume / Weight Tracking
+
+Returns time-series data points for volume progression or body weight tracking across the requested time window and label filters.
+
+**Endpoint:** `GET /volume`
+
+**Authentication:** Required
+
+#### Query Parameters
+
+| Parameter | Type | Required | Default | Description |
+| --------- | ---- | -------- | ------- | ----------- |
+| `range` | `string` | No | `1M` | Time window: `1W`, `1M`, `3M`, `6M`, `1Y`, `ALL` |
+| `metric` | `string` | No | `volume` | Metric type: `volume` or `weight` |
+| `labels` | `string` | No | `""` | Comma-separated session labels |
+
+#### Response (Volume)
+
+```json
+{
   "chartData": [
     {
       "date": "2026-08-20",
@@ -71,35 +120,14 @@ When filtering by `labels`, you can provide one or more of the following `Sessio
   ],
   "metric": "volume",
   "range": "1M",
-  "selectedLabels": ["Chest", "Arms"]
+  "selectedLabels": ["Chest"],
+  "totalVolume": 9300
 }
 ```
 
-#### Response Fields
-
-- **`metrics`**:
-  - `consistency`: Percentage of active days against total days in the timeframe.
-  - `activeDays`: Total number of days with completed workouts in the timeframe.
-  - `currentStreak`: Consecutive days of active training up to today/yesterday.
-  - `totalVolume`: Cumulative load lifted (in kg) for matching workouts in the timeframe.
-- **`heatmap`**: 365-day array of daily workout frequency (`date`, `count`, `level` from `0` to `4`) designed for activity calendar visualization.
-- **`chartData`**: Time-series points for charting:
-  - When `metric="volume"`: `{ date, value (volume in kg), sessions }`
-  - When `metric="weight"`: `{ date, value (body weight in kg) }`
-
 ---
 
-## Example Usage
+## Session Labels Filter Options
 
-```javascript
-const headers = { Authorization: `Bearer ${token}` };
-
-// Fetch volume progress for Chest and Arms over the last 3 months
-const response = await fetch(
-  "http://localhost:3000/api/progress/overview?range=3M&metric=volume&labels=Chest,Arms",
-  { headers }
-).then((r) => r.json());
-
-console.log(response.metrics.consistency); // 85%
-console.log(response.chartData);
-```
+When filtering by `labels`, you can provide one or more of the following `SessionLabel` enum values:
+`Chest`, `Back`, `Shoulders`, `Arms`, `Core`, `Legs`, `Glutes`, `FullBody`, `Cardio`, `Mobility`, `Stretching`.
